@@ -8,7 +8,7 @@ import java.util.Map;
 public class Kviz {
     private String naziv;
     private SistemBodovanja sistemBodovanja;
-    private ArrayList<Pitanje> pitanja;
+    private final ArrayList<Pitanje> pitanja;
 
     public Kviz(String naziv1, SistemBodovanja bodovanje1){
         this.naziv=naziv1;
@@ -30,15 +30,13 @@ public class Kviz {
     public void setSistemBodovanja(SistemBodovanja sistemBodovanja1){
         this.sistemBodovanja=sistemBodovanja1;
     }
-    public void setPitanja(ArrayList<Pitanje> pitanja1){
-        this.pitanja=pitanja1;
-    }
     public void dodajPitanje(Pitanje pitanje1){
-        for(Pitanje p : pitanja){
-            if(p.getTekst().equalsIgnoreCase(pitanje1.getTekst()))
+        for(Pitanje p : pitanja) {
+            if (p.getTekst().equalsIgnoreCase(pitanje1.getTekst())) {
                 throw new IllegalArgumentException("Ne možete dodati pitanje sa tekstom koji već postoji");
-            pitanja.add(pitanje1);
+            }
         }
+            pitanja.add(pitanje1);
     }
     @Override
     public String toString(){
@@ -50,25 +48,29 @@ public class Kviz {
             ispis.append(p.getTekst());
             ispis.append("(").append(p.getBrojPoena()).append("b)");
             HashMap<String,Odgovor> odg=p.getOdgovori();
-
-
+            for(String s : odg.keySet()){
+                ispis.append("\n\t").append(s).append(": ").append(odg.get(s).getTekstOdgovora());
+                if(odg.get(s).isTacno()) ispis.append("(T)");
+            }
+            i++;
+            ispis.append("\n\n");
         }
         return  ispis.toString();
     }
     public RezultatKviza predajKviz(Map<Pitanje,ArrayList<String>> zaokruzeni){
         RezultatKviza rez=new RezultatKviza(this);
-        HashMap<Pitanje, Double> mapa=new HashMap<>(0);
+        HashMap<Pitanje, Double> mapa=new HashMap<>();
         double suma=0;
         for(Pitanje p : zaokruzeni.keySet()){
-            double bodovi = 0;
+            double bodovi;
             ArrayList<String> odogovor=zaokruzeni.get(p);
             bodovi=p.izracunajPoene(odogovor,sistemBodovanja);
             suma=suma+bodovi;
-            mapa.put(p,(double)0);
+            mapa.put(p,bodovi);
         }
         if(pitanja.size()!=mapa.size()){
             for(Pitanje p : pitanja){
-                if(!mapa.containsKey(p)){
+                if(!(mapa.containsKey(p))){
                     mapa.put(p,(double) 0);
                 }
             }
