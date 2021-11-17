@@ -2,6 +2,8 @@ package ba.unsa.etf.rpr;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Kviz {
     private String naziv;
@@ -35,20 +37,45 @@ public class Kviz {
         for(Pitanje p : pitanja){
             if(p.getTekst().equalsIgnoreCase(pitanje1.getTekst()))
                 throw new IllegalArgumentException("Ne možete dodati pitanje sa tekstom koji već postoji");
-
             pitanja.add(pitanje1);
         }
     }
     @Override
     public String toString(){
-        StringBuilder ispis=new StringBuilder("Kviz "+naziv+" boduje se "+sistemBodovanja.getBodovanje()+".\n Pitanja:\n");
+        StringBuilder ispis=new StringBuilder("Kviz "+naziv+" boduje se "+sistemBodovanja.getBodovanje()+". Pitanja:\n");
         int i=1;
         for(Pitanje p: pitanja){
             ispis.append(i);
+            ispis.append(". ");
             ispis.append(p.getTekst());
+            ispis.append("(").append(p.getBrojPoena()).append("b)");
+            HashMap<String,Odgovor> odg=p.getOdgovori();
+
 
         }
         return  ispis.toString();
+    }
+    public RezultatKviza predajKviz(Map<Pitanje,ArrayList<String>> zaokruzeni){
+        RezultatKviza rez=new RezultatKviza(this);
+        HashMap<Pitanje, Double> mapa=new HashMap<>(0);
+        double suma=0;
+        for(Pitanje p : zaokruzeni.keySet()){
+            double bodovi = 0;
+            ArrayList<String> odogovor=zaokruzeni.get(p);
+            bodovi=p.izracunajPoene(odogovor,sistemBodovanja);
+            suma=suma+bodovi;
+            mapa.put(p,(double)0);
+        }
+        if(pitanja.size()!=mapa.size()){
+            for(Pitanje p : pitanja){
+                if(!mapa.containsKey(p)){
+                    mapa.put(p,(double) 0);
+                }
+            }
+        }
+        rez.setBodovi(mapa);
+        rez.setTotal(suma);
+        return rez;
     }
 
 

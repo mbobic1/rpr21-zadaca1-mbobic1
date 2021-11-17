@@ -15,5 +15,10 @@ public class Odgovor {
         public String getTekstOdgovora(){
             return tekstOdgovora;
         }
-
+        public void setTekstOdgovora(String odgovor){
+            this.tekstOdgovora=odgovor;
+        }
+        public void setTacno(boolean tacno) {
+        this.tacno = tacno;
+        }
 }
