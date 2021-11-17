@@ -49,6 +49,8 @@ public class Pitanje{
         }
         return ispis.toString();
     }
+
+
     public double izracunajPoene(List<String> tacni, SistemBodovanja sistemBodovanja1){
         boolean vrati=true;
         for(String s: tacni){
@@ -60,15 +62,17 @@ public class Pitanje{
         if(!vrati) throw new IllegalArgumentException("Odabran je nepostojeći odgovor");
         Set<String> duplikati=new HashSet<>(tacni);
         if(duplikati.size()!= tacni.size()) throw new IllegalArgumentException("Postoje duplikati među odabranim odgovorima");
+
         int brojTacnih=0, brojOdgovora=0,zaokruzeni=0;
         boolean netacni=false;
         for(String s : tacni){
-            if(!odgovori.get(s).isTacno()) netacni=true;
+            if(!(odgovori.get(s).isTacno())) netacni=true;
             if(odgovori.get(s).isTacno()) zaokruzeni=zaokruzeni+1;
         }
         for(Odgovor s : odgovori.values()){
-            if(s.isTacno())
-                brojTacnih=brojTacnih+1;
+            if(s.isTacno()) {
+                brojTacnih = brojTacnih + 1;
+            }
             brojOdgovora=brojOdgovora+1;
         }
         if(sistemBodovanja1.name().equals("BINARNO")){
